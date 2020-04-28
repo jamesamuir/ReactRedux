@@ -9,6 +9,7 @@ import CoursesPage from "./courses/CoursesPage";
 import {ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AuthorsPage from "./authors/AuthorsPage";
+import ManageAuthorPage from "./authors/ManageAuthorPage";
 
 function App() {
     return (
@@ -18,6 +19,8 @@ function App() {
                 <Route exact path="/" component={HomePage} />
                 <Route path="/about" component={AboutPage} />
                 <Route path="/authors" component={AuthorsPage} />
+                <Route path="/author/:id" component={ManageAuthorPage} />
+                <Route path="/author" component={ManageAuthorPage} />
                 <Route path="/courses" component={CoursesPage} />
                 <Route path="/course/:slug" component={ManageCoursePage} />
                 <Route path="/course" component={ManageCoursePage} />

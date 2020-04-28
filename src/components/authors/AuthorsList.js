@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 
-function AuthorsList({authors}) {
+function AuthorsList({authors, onDeleteClick}) {
     return (
         <table className="table">
             <thead>
@@ -21,7 +21,7 @@ function AuthorsList({authors}) {
                         <td>
                             <button
                                 className="btn btn-outline-danger"
-                                onClick={() => {}}
+                                onClick={() => onDeleteClick(author)}
                             >X</button>
                         </td>
                     </tr>

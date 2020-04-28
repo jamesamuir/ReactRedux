@@ -14,6 +14,10 @@ export function updateAuthorSuccess(author){
     return {type: actionTypes.UPDATE_AUTHOR_SUCCESS, author: author};
 }
 
+export function deleteAuthorOptimistic(author){
+    return {type: actionTypes.DELETE_AUTHOR_OPTIMISTIC, author: author}
+}
+
 export function loadAuthors(){
     return function(dispatch){
 
@@ -29,17 +33,25 @@ export function loadAuthors(){
     }
 }
 
-export function createAuthor(author){
+export function saveAuthor(author){
     return function(dispatch){
         //invoke loader
         dispatch(beginApiCall());
         return authorApi.saveAuthor(author).then(savedAuthor => {
             savedAuthor.id?
-                dispatch(createAuthorSuccess(savedAuthor)):
-                dispatch(updateAuthorSuccess())
+                dispatch(updateAuthorSuccess(savedAuthor)):
+                dispatch(createAuthorSuccess(savedAuthor))
+
         }).catch(error => {
             dispatch(apiCallError());
             throw error;
         })
+    }
+}
+
+export function deleteAuthor(author){
+    return function(dispatch){
+        dispatch(deleteAuthorOptimistic(author));
+        return authorApi.deleteAuthor(author.id);
     }
 }
