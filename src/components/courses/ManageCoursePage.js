@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {Redirect} from 'react-router-dom'
 import {connect} from 'react-redux';
 import {loadCourses, saveCourse} from '../../redux/actions/courseActions';
 import {loadAuthors} from '../../redux/actions/authorActions';
@@ -9,11 +10,12 @@ import Spinner from "../common/Spinner";
 import {toast} from "react-toastify";
 
 
-export function ManageCoursePage({courses, authors, loadAuthors, loadCourses, saveCourse, history, ...props}){
+export function ManageCoursePage({courses, authors, loadAuthors, loadCourses, saveCourse, history, redirectTo404, ...props}){
 
 
     const [course, setCourse] = useState({ ...props.course });
     const [errors, setErrors] = useState({});
+    const [loading, setLoading] = useState(props.loading);
     const [saving, setSaving] = useState(false);
 
 
@@ -33,6 +35,10 @@ export function ManageCoursePage({courses, authors, loadAuthors, loadCourses, sa
         }
 
     }, [props.course]);
+
+    useEffect(() => {
+        setLoading(props.loading)
+    }, [props.loading]);
 
     function handleChange(event){
         const {name, value} = event.target;
@@ -75,9 +81,16 @@ export function ManageCoursePage({courses, authors, loadAuthors, loadCourses, sa
 
 
     return (
-        authors.length === 0 || courses.length === 0 ? <Spinner/> : (
-            <CourseForm authors={authors} course={course} errors={errors} onChange={handleChange} onSave={handleSave} saving={saving}/>
-        )
+
+        <>
+            {props.redirectTo404 && <Redirect to="/404" />}
+            {loading === true ? <Spinner/> : (
+                <CourseForm authors={authors} course={course} errors={errors} onChange={handleChange}
+                            onSave={handleSave} saving={saving}/>
+            )
+            }
+        </>
+
 
     );
 }
@@ -89,10 +102,15 @@ export function getCourseBySlug(courses, slug){
 function mapStateToProps(state, ownProps){
     const slug = ownProps.match.params.slug;
     const course = slug && state.courses.length > 0? getCourseBySlug(state.courses, slug) : newCourse;
+
+    const redirectTo404 = slug && course === undefined;
+
     return {
         course: course,
         courses: state.courses,
-        authors: state.authors
+        authors: state.authors,
+        loading: state.apiCallsInProgress > 0,
+        redirectTo404: redirectTo404
     };
 }
 
