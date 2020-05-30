@@ -2,12 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-const CourseList = ({ courses, onDeleteClick }) => (
+const CourseList = ({ courses, onDeleteClick, onSortClick }) => (
     <table className="table">
         <thead>
         <tr>
             <th />
-            <th>Title</th>
+            <th><a href="" onClick={onSortClick}>Title</a></th>
             <th>Author</th>
             <th>Category</th>
             <th></th>

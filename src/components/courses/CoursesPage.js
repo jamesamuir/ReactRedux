@@ -16,17 +16,17 @@ const CoursesPage = ({authors, loadCourses, loadAuthors, deleteCourse, ...props}
     const [loading, setLoading] = useState(props.loading);
 
     useEffect(() => {
-        if (props.courses.length === 0 ){
+        if (props.courses.length === 0 && !loading){
             loadCourses().catch(error => {
-                alert("Loading courses failed: " + error);
+                //alert("Loading courses failed: " + error);
             });
         } else {
             setCourses([...props.courses]);
         }
 
-        if (authors.length === 0){
+        if (authors.length === 0 && !loading){
             loadAuthors().catch(error => {
-                alert("Loading authors failed: " + error);
+                //alert("Loading authors failed: " + error);
             });
         }
 
@@ -49,6 +49,21 @@ const CoursesPage = ({authors, loadCourses, loadAuthors, deleteCourse, ...props}
         });
     }
 
+    function handleSortCourses(event){
+        event.preventDefault();
+       const sortedCourses = [...courses].sort(compare);
+       setCourses(sortedCourses);
+    }
+
+    function compare(a,b){
+       const titleA = a.title.toUpperCase();
+       const titleB = b.title.toUpperCase();
+       if (titleA > titleB){
+           return 1;
+       } else if (titleA < titleB){
+           return -1
+       }
+    }
 
 
     return (
@@ -66,7 +81,7 @@ const CoursesPage = ({authors, loadCourses, loadAuthors, deleteCourse, ...props}
                     </button>
                     {
                         courses.length > 0 &&
-                        <CourseList courses={courses} onDeleteClick={handleDeleteCourse}/>
+                        <CourseList courses={courses} onDeleteClick={handleDeleteCourse} onSortClick={handleSortCourses}/>
                     }
                     {
                         courses.length === 0 &&
@@ -82,15 +97,14 @@ const CoursesPage = ({authors, loadCourses, loadAuthors, deleteCourse, ...props}
 
 function mapStateToProps(state) {
     return {
-        courses: state.courses,
-           /* state.authors.length === 0
+        courses: state.authors.length === 0
                 ? []
                 : state.courses.map(course => {
                     return {
                         ...course,
                         authorName: state.authors.find(a => a.id === course.authorId).name
                     };
-                }),*/
+                }),
         authors: state.authors,
         loading: state.apiCallsInProgress > 0,
         redirectToAddCoursePage: false
